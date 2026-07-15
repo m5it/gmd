@@ -29,15 +29,30 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-    ],
-    python_requires=">=3.8",
     install_requires=[
         "rich>=13.0.0",
         "pydantic>=2.0.0",
         "PyYAML>=6.0",
         "click>=8.0.0",
     ],
+    extras_require={
+        "gui": [
+            "Pillow>=9.0.0",  # Optional for advanced icon support
+        ],
+        "dev": [
+            "pytest>=7.0.0",
+            "pytest-cov>=4.0.0",
+            "black>=23.0.0",
+            "flake8>=6.0.0",
+        ],
+    },
+    entry_points={
+        "console_scripts": [
+            "gmd-merge=gmd.cli.merge:main",
+            "gmd-commit=gmd.cli.commit:main",
+            "gmd-gui=gmd.gui.main:main",
+        ],
+    },
     extras_require={
         "dev": [
             "pytest>=7.0.0",

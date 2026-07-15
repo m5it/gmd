@@ -1,41 +1,38 @@
-# Plan: GMD v1.0.0 - Git Merge Directories Suite
-## ID: 1784083902.639048
-## Created: 2026-07-15 02:51:42
+# Plan: GMD Tkinter GUI - Graphical Interface for Directory Merge
+## ID: 1784084871.227013
+## Created: 2026-07-15 03:07:51
 ## Status: in_progress
 
 ### Goal:
-Create a Python-based directory synchronization and git submodule management suite. Two separate programs (gmd-merge and gmd-commit) with shared config system, multiple output formats (color, plain, json), backup support, progress bars, and interactive mode.
+Create a Python/Tkinter GUI application for gmd-merge with horizontal layout (source left, destination right), top menu bar, commands menu, file browser panels with right-click context menu, auto-scan, progress bar, status bar, exclude patterns, and icon support.
 
-### Tasks (10):
-1. [pending] Task 1: Create project structure and setup files
-   ID: 1784083904.3018873
+### Tasks (9):
+1. [pending] Task 1: Create GUI main window and application structure
+   ID: 1784084875.817157
 
-2. [pending] Task 2: Create config system (loader and schema)
-   ID: 1784083923.0382187
+2. [pending] Task 2: Create top menu bar with File, Commands, Help menus
+   ID: 1784084898.4503944
 
-3. [pending] Task 3: Create output formatting system
-   ID: 1784083924.812592
+3. [pending] Task 3: Create file browser panels with Treeview for source and destination
+   ID: 1784084901.602261
 
-4. [pending] Task 4: Create core scanner and comparator modules
-   ID: 1784083926.5380576
+4. [pending] Task 4: Implement right-click context menu with "Open in File Browser" option
+   ID: 1784084904.3799584
 
-5. [pending] Task 5: Create merger and backup modules
-   ID: 1784083928.7908726
+5. [pending] Task 5: Create auto-scan functionality and comparison logic
+   ID: 1784084907.153305
 
-6. [pending] Task 6: Create interactive mode and utilities
-   ID: 1784083930.5417018
+6. [pending] Task 6: Create bottom control panel with action buttons
+   ID: 1784084909.6607797
 
-7. [pending] Task 7: Create gmd-merge CLI module
-   ID: 1784083933.1727693
+7. [pending] Task 7: Implement progress bar and status bar
+   ID: 1784084912.3406227
 
-8. [pending] Task 8: Create gmd-commit CLI module
-   ID: 1784083934.8414948
+8. [pending] Task 8: Add icon support and visual enhancements
+   ID: 1784084918.4583485
 
-9. [pending] Task 9: Create entry point scripts and package init
-   ID: 1784083936.463562
-
-10. [pending] Task 10: Create README and documentation
-   ID: 1784083938.8037524
+9. [pending] Task 9: Create GUI entry point and integrate with existing package
+   ID: 1784084922.1473644
 
 ---
 
