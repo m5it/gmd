@@ -4,10 +4,11 @@ A Python-based suite for directory synchronization and git submodule management.
 
 ## Overview
 
-GMD (Git Merge Directories) provides two complementary tools:
+GMD (Git Merge Directories) provides three complementary tools:
 
-- **gmd-merge**: Synchronize files between two directories with advanced features
+- **gmd-merge**: Command-line tool for synchronizing files between directories
 - **gmd-commit**: Batch commit changes across git submodules
+- **gmd-gui**: Graphical user interface for visual directory comparison and sync
 
 ## Features
 
@@ -29,6 +30,15 @@ GMD (Git Merge Directories) provides two complementary tools:
 - **Smart Processing**: Only process changed submodules
 - **Parallel Execution**: Process multiple submodules concurrently
 - **Dry Run**: Preview operations without executing
+
+### gmd-gui (New!)
+- **Visual Comparison**: Side-by-side directory tree views with color coding
+- **Interactive Sync**: Point-and-click synchronization with preview
+- **Real-time Progress**: Progress bars and elapsed time tracking
+- **Context Menus**: Right-click to open files in system file manager
+- **Status Icons**: Visual indicators for file states (📁 📄 ⚠ ➕ ✓)
+- **Direction Control**: Source→Dest, Dest→Source, or Bidirectional
+- **Exclude Patterns**: Easy pattern entry with visual feedback
 
 ## Installation
 
@@ -60,6 +70,14 @@ pip install .
 - pydantic >= 2.0.0 (config validation)
 - PyYAML >= 6.0 (YAML config support)
 - click >= 8.0.0 (CLI framework)
+- tkinter (usually included with Python, required for GUI)
+
+### Optional GUI Dependencies
+
+```bash
+# For enhanced icon support in GUI
+pip install "gmd-tools[gui]"
+```
 
 ## Quick Start
 
@@ -109,6 +127,23 @@ gmd-commit -M /path/to/repo --submodules module1 --submodules module2
 # Parallel processing with 8 workers
 gmd-commit -M /path/to/repo -j 8
 ```
+
+### gmd-gui
+
+```bash
+# Launch the GUI
+gmd-gui
+
+# Or from Python
+python -m gmd.gui.main
+```
+
+The GUI provides a visual interface for:
+- Selecting source and destination directories
+- Viewing side-by-side comparison with color coding
+- Previewing changes before synchronization
+- Configuring sync direction and exclude patterns
+- Creating backups with one click
 
 ## Configuration Files
 
