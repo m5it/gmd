@@ -945,3 +945,17 @@ Usage:
 [18:39:55] INFO: AI response: 41590 prompt + 487 response tokens (total: 8673075 / 90742)
 [18:39:55] [after +487] [Context: 47375/131072 (36.1%)]
 [18:39:55] You: 
+[18:47:04] [Context: 47448/131072 (36.2%)]
+[18:47:04] [iter 1] [Context: 47448/131072 (36.2%)]
+[18:47:04] INFO: AI request (iteration 1, msgs=100)
+[18:47:07] INFO: AI response: 42116 prompt + 217 response tokens (total: 8715191 / 90959)
+[18:47:07] [after +217] [Context: 47534/131072 (36.3%)]
+[18:47:07] [iter 2] [Context: 47534/131072 (36.3%)]
+[18:47:07] INFO: AI request (iteration 2, msgs=102)
+[18:47:10] INFO: AI response: 42210 prompt + 187 response tokens (total: 8757401 / 91146)
+[18:47:10] [after +187] [Context: 47638/131072 (36.3%)]
+[18:47:10] [iter 3] [Context: 47638/131072 (36.3%)]
+[18:47:10] INFO: AI request (iteration 3, msgs=104)
+[18:47:14] INFO: AI response: 42319 prompt + 364 response tokens (total: 8799720 / 91510)
+[18:47:14] [after +364] [Context: 47972/131072 (36.6%)]
+[18:47:14] You: 

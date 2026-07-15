@@ -2,7 +2,7 @@
 CLI modules for gmd-merge and gmd-commit commands.
 """
 
-from gmd.cli.merge import main as merge_main
-from gmd.cli.commit import main as commit_main
+# Avoid importing submodules here to prevent circular import warnings
+# when running python -m gmd.cli.merge or python -m gmd.cli.commit
 
-__all__ = ["merge_main", "commit_main"]
+__all__ = []
