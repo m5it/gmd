@@ -1,0 +1,31 @@
+{
+  "master": "/home/user/project-master",
+  "slave": "/home/user/project-slave",
+  "output": {
+    "format": "color",
+    "progress": true,
+    "report": "./gmd-merge-report.json"
+  },
+  "backup": {
+    "enabled": true,
+    "directory": "./backups",
+    "keep": 10
+  },
+  "merge": {
+    "direction": "master-to-slave",
+    "mode": "interactive",
+    "categories": ["missing", "update"],
+    "excludes": [
+      "*.tmp",
+      ".git/",
+      ".gitignore",
+      "node_modules/",
+      "__pycache__/",
+      "*.pyc",
+      "*.log",
+      ".env",
+      ".venv/"
+    ],
+    "dry_run": false
+  }
+}

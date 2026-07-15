@@ -1,0 +1,13 @@
+# GMD Commit Configuration Example
+# Save as .gmdrc or gmd.config.yaml in your project root
+
+gitdir: /home/user/project-with-submodules
+
+output:
+  format: color      # color, plain, json, silent
+  progress: true
+
+commit:
+  auto_push: false   # Automatically push after commit
+  parallel: true     # Process submodules in parallel
+  max_workers: 4     # Number of parallel workers

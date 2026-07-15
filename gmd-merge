@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+"""
+GMD Merge - Directory synchronization tool
+Entry point script for gmd-merge command.
+"""
+
+import sys
+from gmd.cli.merge import main
+
+if __name__ == "__main__":
+    sys.exit(main())

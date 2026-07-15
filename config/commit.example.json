@@ -1,0 +1,12 @@
+{
+  "gitdir": "/home/user/project-with-submodules",
+  "output": {
+    "format": "color",
+    "progress": true
+  },
+  "commit": {
+    "auto_push": false,
+    "parallel": true,
+    "max_workers": 4
+  }
+}

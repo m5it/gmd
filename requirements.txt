@@ -1,0 +1,9 @@
+# GMD v1.0.0 Dependencies
+# Install with: pip install -r requirements.txt
+
+rich>=13.0.0          # Terminal formatting and progress bars
+pydantic>=2.0.0        # Config validation
+PyYAML>=6.0            # YAML config support
+click>=8.0.0           # CLI framework
+
+# Development dependencies (install with: pip install -r requirements.txt -r requirements-dev.txt)

@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+"""
+GMD Commit - Git submodule batch commit tool
+Entry point script for gmd-commit command.
+"""
+
+import sys
+from gmd.cli.commit import main
+
+if __name__ == "__main__":
+    sys.exit(main())
