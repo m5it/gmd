@@ -939,3 +939,9 @@ Usage:
 [17:47:07] [after +273] [Context: 46897/131072 (35.8%)]
 [17:47:07] You: 
 [17:47:21] You: 
+[18:39:48] [Context: 46918/131072 (35.8%)]
+[18:39:48] [iter 1] [Context: 46918/131072 (35.8%)]
+[18:39:48] INFO: AI request (iteration 1, msgs=98)
+[18:39:55] INFO: AI response: 41590 prompt + 487 response tokens (total: 8673075 / 90742)
+[18:39:55] [after +487] [Context: 47375/131072 (36.1%)]
+[18:39:55] You: 

@@ -1425,3 +1425,43 @@ Done! I've completely rewritten README.md to fix the corruption. The file now ha
 
 <!-- {"role": "assistant", "content": "Done! I've completely rewritten README.md to fix the corruption. The file now has:\n\n**Fixed Structure:**\n- Overview with all **three tools** (gmd-merge, gmd-commit, gmd-gui)\n- **GUI Features** section with visual comparison, interactive sync, progress tracking, etc.\n- **Dependencies** with tkinter note and optional `[gui]` extras\n- **Quick Start** with all three tools including gmd-gui examples\n- All original sections preserved: Configuration, CLI Reference, Workflows, Output Formats, Troubleshooting\n\nThe README is now clean, properly formatted, and documents the new GUI feature alongside the existing CLI tools!", "sessionId": 314, "rowId": 28, "timestamp": 1784137627.0088398, "date": "2026-07-15", "thinking": "Done! I've rewritten the README.md file completely to fix the corruption. The file now has:\n\n1. **Proper structure** with all sections in correct order\n2. **Three tools** in overview: gmd-merge, gmd-commit, gmd-gui\n3. **GUI features** section with all the visual features\n4. **Dependencies** section with tkinter note and optional [gui] extras\n5. **Quick Start** section with all three tools including gmd-gui\n6. **All remaining sections** intact: Configuration, CLI Reference, Workflows, Output Formats, Troubleshooting, License, Author\n\nThe file is now clean and properly formatted!", "prompt_tokens": 41432, "response_tokens": 273} -->
 
+## [18:39] USER
+how to start cli app if is not on pip, just from git?
+
+---
+
+<!-- {"role": "user", "content": "how to start cli app if is not on pip, just from git?", "sessionId": 314, "rowId": 29, "timestamp": 1784140788.566202, "date": "2026-07-15"} -->
+
+## [18:39] ASSISTANT
+To run the GMD CLI app directly from git (without pip install):
+> 
+> ## Option 1: Using Python Module (-m)
+> 
+> ```bash
+> # From the cloned repository root
+> cd gmd
+> 
+> # Run gmd-merge
+> python -m gmd.cli.merge -M /path/to/master -S /path/to/slave
+> 
+> # Run gmd-commit
+> python -m gmd.cli.commit -M /path/to/repo -m "message"
+> 
+> # Run gmd-gui
+> python -m gmd.gui.main
+> ```
+> 
+> ## Option 2: Using Direct Script Paths
+> 
+> ```bash
+> # From the cloned repository root
+> cd gmd
+> 
+> # Run merge CLI
+> python gmd/cli/merge.py -M /path/to/master -S /...
+> (truncated, 1642 chars total)
+
+---
+
+<!-- {"role": "assistant", "content": "To run the GMD CLI app directly from git (without pip install):\n\n## Option 1: Using Python Module (-m)\n\n```bash\n# From the cloned repository root\ncd gmd\n\n# Run gmd-merge\npython -m gmd.cli.merge -M /path/to/master -S /path/to/slave\n\n# Run gmd-commit\npython -m gmd.cli.commit -M /path/to/repo -m \"message\"\n\n# Run gmd-gui\npython -m gmd.gui.main\n```\n\n## Option 2: Using Direct Script Paths\n\n```bash\n# From the cloned repository root\ncd gmd\n\n# Run merge CLI\npython gmd/cli/merge.py -M /path/to/master -S /path/to/slave\n\n# Run commit CLI\npython gmd/cli/commit.py -M /path/to/repo -m \"message\"\n\n# Run GUI\npython gmd/gui/main.py\n```\n\n## Option 3: Install in Editable Mode (Recommended for Development)\n\n```bash\n# Clone the repo\ngit clone https://github.com/w4d4f4k/gmd.git\ncd gmd\n\n# Create virtual environment\npython3 -m venv venv\nsource venv/bin/activate  # On Windows: venv\\Scripts\\activate\n\n# Install dependencies\npip install -r requirements.txt\n\n# Install in editable/development mode\npip install -e .\n\n# Now you can use the commands normally:\ngmd-merge -M /path/to/master -S /path/to/slave\ngmd-commit -M /path/to/repo -m \"message\"\ngmd-gui\n```\n\n## Requirements Before Running\n\nMake sure you have the dependencies installed:\n```bash\npip install rich pydantic PyYAML click\n```\n\nFor GUI (if needed):\n```bash\n# tkinter is usually included with Python, but verify:\npython -c \"import tkinter\"\n\n# Optional for enhanced icons:\npip install Pillow\n```\n\n## Quick Test\n\n```bash\n# Test if it works\npython -m gmd.cli.merge --help\n```\n\nThe `-e` (editable) install is best for development since changes to the code are immediately reflected without reinstalling!", "sessionId": 314, "rowId": 29, "timestamp": 1784140795.6221085, "date": "2026-07-15", "thinking": "The user is asking how to start the CLI app if it's not installed via pip, just from git clone. I should provide instructions for running directly from source.", "prompt_tokens": 41590, "response_tokens": 487} -->
+
