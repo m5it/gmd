@@ -122,22 +122,25 @@ class JsonOutput:
             "action": action,
             "total": total,
             "processed": processed,
-            "complete": processed == total,
-            "timestamp": datetime.now().isoformat()
-        }
+    def submodule_status(self, name: str, status: str, details: str = "") -> None:
+        """Report submodule status."""
+        self._add_message("submodule_status", f"{name}: {status}", 
+                         name=name, status=status, details=details, item_type="submodule")
     
-    def progress_start(self, total: int, description: str = "") -> int:
-        """Start progress tracking."""
-        self._data["progress"] = {
-            "total": total,
-            "current": 0,
-            "description": description
-        }
-        return 0
+    def subtree_status(self, name: str, status: str, details: str = "") -> None:
+        """Report subtree status."""
+        self._add_message("subtree_status", f"{name}: {status}",
+                         name=name, status=status, details=details, item_type="subtree")
     
-    def progress_update(self, task_id: int, advance: int = 1) -> None:
-        """Update progress."""
-        if "progress" in self._data:
+    def git_operation(self, repo: str, operation: str, result: str) -> None:
+        """Report git operation result."""
+        self._add_message("git_operation", f"[{repo}] {operation}: {result}",
+                         repo=repo, operation=operation, result=result)
+    
+    def subtree_operation(self, name: str, operation: str, result: str) -> None:
+        """Report subtree operation result."""
+        self._add_message("subtree_operation", f"[{name}] {operation}: {result}",
+                         name=name, operation=operation, result=result, item_type="subtree")
             self._data["progress"]["current"] += advance
     
     def progress_finish(self, task_id: int) -> None:

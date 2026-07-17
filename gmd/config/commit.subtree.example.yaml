@@ -1,0 +1,23 @@
+# Example configuration for gmd-commit with subtree support
+# Place this file as .gmdrc.yaml in your repository root
+
+# Repository path (optional, can use -M flag)
+gitdir: /path/to/your/repo
+
+# Output settings
+output:
+  format: color        # Options: color, plain, json, silent
+  progress: true       # Show progress bars
+
+# Commit settings for submodules
+commit:
+  auto_push: false     # Don't auto-push after commit
+  parallel: true       # Process in parallel
+  max_workers: 4       # Number of parallel workers
+
+# Subtree-specific settings
+subtree:
+  auto_pull: true      # Automatically pull updates before operations
+  squash: true         # Use --squash for subtree pull/push
+  message_prefix: "[subtree] "  # Prefix for commit messages
+  default_branch: main # Default branch for subtree operations

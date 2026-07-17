@@ -88,6 +88,21 @@ class CommitConfig(BaseModel):
     max_workers: int = Field(default=4, ge=1, le=16)
 
 
+class SubtreeConfig(BaseModel):
+    """Subtree-specific configuration."""
+    auto_pull: bool = False
+    squash: bool = True
+    message_prefix: str = "[subtree] "
+    default_branch: str = "main"
+    
+    @field_validator("message_prefix")
+    @classmethod
+    def validate_message_prefix(cls, v: str) -> str:
+        if not v.endswith(" "):
+            return v + " "
+        return v
+
+
 class GMDConfig(BaseModel):
     """Main GMD configuration."""
     master: Optional[Path] = None
@@ -98,6 +113,7 @@ class GMDConfig(BaseModel):
     backup: BackupConfig = Field(default_factory=BackupConfig)
     merge: MergeConfig = Field(default_factory=MergeConfig)
     commit: CommitConfig = Field(default_factory=CommitConfig)
+    subtree: SubtreeConfig = Field(default_factory=SubtreeConfig)
     
     @field_validator("master", "slave", "gitdir")
     @classmethod

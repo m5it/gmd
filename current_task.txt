@@ -1,4 +1,4 @@
-Plan: GMD Tkinter GUI - Graphical Interface for Directory Merge
-Progress: 9/9 completed (0 blocked)
+Plan: Add Git Subtree Support to GMD
+Progress: 19/19 completed (0 blocked)
 No task in progress.
-Updated: 2026-07-15 03:15:59
+Updated: 2026-07-17 03:58:51

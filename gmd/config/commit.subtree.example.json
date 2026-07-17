@@ -1,0 +1,19 @@
+{
+  "description": "Example configuration for gmd-commit with subtree support",
+  "gitdir": "/path/to/your/repo",
+  "output": {
+    "format": "color",
+    "progress": true
+  },
+  "commit": {
+    "auto_push": false,
+    "parallel": true,
+    "max_workers": 4
+  },
+  "subtree": {
+    "auto_pull": true,
+    "squash": true,
+    "message_prefix": "[subtree] ",
+    "default_branch": "main"
+  }
+}

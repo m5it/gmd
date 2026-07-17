@@ -37,17 +37,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - N/A
 
 ## [1.0.0] - 2024-01-XX
+- **README.md**: Updated to include gmd-gui features and quick start
 
-### Added
+#### Subtree Support (New!)
+- **gmd-commit**: Now supports git subtrees alongside submodules
+  - Auto-detect subtrees from git log with `git log --grep="git-subtree-dir:"`
+  - `--subtrees` flag to enable subtree mode
+  - `--detect-subtrees` flag to list all subtrees in repository
+  - Subtree operations: status, pull, push
+  - `subtree_pull()` and `subtree_push()` methods with --squash support
+  - `SubtreeConfig` class with auto_pull, squash, message_prefix settings
+  - Subtree-specific output formatters (color, plain, JSON)
+  - Example config files: `commit.subtree.example.json` and `.yaml`
 
-- **gmd-merge**: Command-line directory synchronization tool
-  - Multiple actions: preview, sync, diff, backup
-  - Sync directions: master→slave, slave→master, bidirectional
-  - File categories: missing, updated, existing, extra
-  - Interactive mode with file-by-file approval
-  - Backup support with retention policy
-  - Progress bars for large directories
-  - Multiple output formats: color, plain, JSON, silent
+### Changed
+
+- **setup.py**: Added `gmd-gui` console script entry point
+- **setup.py**: Added optional `[gui]` extras_require for Pillow dependency
+- **README.md**: Updated to include gmd-gui features, quick start, and subtree documentation
+- **gmd-commit CLI**: Added `--subtrees`, `--detect-subtrees` flags and subtree operations
   - Exclude patterns with glob/regex support
   - Dry run mode
   - SHA256 verification

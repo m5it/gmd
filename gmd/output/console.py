@@ -142,16 +142,6 @@ class ConsoleOutput:
         return Confirm.ask(message, default=default, console=self.console)
     
     def prompt_choice(self, message: str, choices: List[str]) -> str:
-        """Prompt for choice."""
-        return Prompt.ask(message, choices=choices, console=self.console)
-    
-    def show_diff(self, file1: str, file2: str, diff_content: str) -> None:
-        """Show diff between files."""
-        self.console.print()
-        self.console.print(f"[header]Diff: {file1} vs {file2}[/header]")
-        syntax = Syntax(diff_content, "diff", theme="monokai", line_numbers=True)
-        self.console.print(syntax)
-    
     def submodule_status(self, name: str, status: str, details: str = "") -> None:
         """Report submodule status."""
         if status == "clean":
@@ -163,6 +153,36 @@ class ConsoleOutput:
         else:
             self.console.print(f"[info]ℹ[/info] {name}: {status} {details}")
     
+    def subtree_status(self, name: str, status: str, details: str = "") -> None:
+        """Report subtree status."""
+        # Use tree emoji for subtrees to distinguish from submodules
+        if status == "clean":
+            self.console.print(f"[file.exists]🌲[/file.exists] {name}: {details or 'clean'}")
+        elif status == "modified":
+            self.console.print(f"[file.update]🌲[/file.update] {name}: {details or 'modified'}")
+        elif status == "error":
+            self.console.print(f"[file.error]🌲[/file.error] {name}: {details or 'error'}")
+        else:
+            self.console.print(f"[info]🌲[/info] {name}: {status} {details}")
+    
+    def git_operation(self, repo: str, operation: str, result: str) -> None:
+        """Report git operation result."""
+        if "error" in result.lower() or "failed" in result.lower():
+            self.console.print(f"[error]✗[/error] [{repo}] {operation}: {result}")
+        elif "success" in result.lower():
+            self.console.print(f"[success]✓[/success] [{repo}] {operation}: {result}")
+        else:
+            self.console.print(f"[info]ℹ[/info] [{repo}] {operation}: {result}")
+    
+    def subtree_operation(self, name: str, operation: str, result: str) -> None:
+        """Report subtree operation result."""
+        # Prefix with tree emoji to indicate subtree
+        if "error" in result.lower() or "failed" in result.lower():
+            self.console.print(f"[error]🌲[/error] [{name}] {operation}: {result}")
+        elif "success" in result.lower():
+            self.console.print(f"[success]🌲[/success] [{name}] {operation}: {result}")
+        else:
+            self.console.print(f"[info]🌲[/info] [{name}] {operation}: {result}")
     def git_operation(self, repo: str, operation: str, result: str) -> None:
         """Report git operation result."""
         if "error" in result.lower() or "failed" in result.lower():

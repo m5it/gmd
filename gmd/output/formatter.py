@@ -117,22 +117,22 @@ class OutputFormatter:
         self._formatter.stats(missing, update, exists, copied, failed)
     
     # Summary
-    def summary(self, action: str, total: int, processed: int) -> None:
-        """Print summary."""
-        self._formatter.summary(action, total, processed)
+    # Git operations
+    def submodule_status(self, name: str, status: str, details: str = "") -> None:
+        """Report submodule status."""
+        self._formatter.submodule_status(name, status, details)
     
-    # Progress
-    def progress_start(self, total: int, description: str = "") -> Any:
-        """Start progress bar."""
-        if self.config.progress:
-            return self._formatter.progress_start(total, description)
-        return None
+    def subtree_status(self, name: str, status: str, details: str = "") -> None:
+        """Report subtree status."""
+        self._formatter.subtree_status(name, status, details)
     
-    def progress_update(self, progress_id: Any, advance: int = 1) -> None:
-        """Update progress."""
-        if self.config.progress and progress_id is not None:
-            self._formatter.progress_update(progress_id, advance)
+    def git_operation(self, repo: str, operation: str, result: str) -> None:
+        """Report git operation result."""
+        self._formatter.git_operation(repo, operation, result)
     
+    def subtree_operation(self, name: str, operation: str, result: str) -> None:
+        """Report subtree operation result."""
+        self._formatter.subtree_operation(name, operation, result)
     def progress_finish(self, progress_id: Any) -> None:
         """Finish progress."""
         if self.config.progress and progress_id is not None:

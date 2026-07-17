@@ -107,22 +107,21 @@ class PlainOutput:
     
     def progress_finish(self, task_id: int) -> None:
         """Finish progress."""
-        self._print(f"Complete: {self._progress_current}/{self._progress_total}")
+    def submodule_status(self, name: str, status: str, details: str = "") -> None:
+        """Report submodule status."""
+        self._print(f"[SUBMODULE:{status.upper()}] {name}: {details}")
     
-    def prompt_yes_no(self, message: str, default: bool = False) -> bool:
-        """Prompt for yes/no."""
-        if self.silent:
-            return default
-        prompt = f"{message} [{'Y/n' if default else 'y/N'}]: "
-        response = input(prompt).strip().lower()
-        if not response:
-            return default
-        return response in ('y', 'yes')
+    def subtree_status(self, name: str, status: str, details: str = "") -> None:
+        """Report subtree status."""
+        self._print(f"[SUBTREE:{status.upper()}] {name}: {details}")
     
-    def prompt_choice(self, message: str, choices: List[str]) -> str:
-        """Prompt for choice."""
-        if self.silent:
-            return choices[0] if choices else ""
+    def git_operation(self, repo: str, operation: str, result: str) -> None:
+        """Report git operation result."""
+        self._print(f"[GIT:{operation.upper()}] {repo}: {result}")
+    
+    def subtree_operation(self, name: str, operation: str, result: str) -> None:
+        """Report subtree operation result."""
+        self._print(f"[SUBTREE:{operation.upper()}] {name}: {result}")
         self._print(f"{message} ({'/'.join(choices)})")
         while True:
             response = input("> ").strip()

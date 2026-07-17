@@ -29,15 +29,13 @@ GMD (Git Merge Directories) provides three complementary tools:
 - **Batch Operations**: status, add, commit, push, full
 - **Smart Processing**: Only process changed submodules
 - **Parallel Execution**: Process multiple submodules concurrently
+### gmd-commit
+- **Auto-Detection**: Automatically find submodules from `.gitmodules` or subtrees from git log
+- **Batch Operations**: status, add, commit, push, full (for submodules); status, pull, push (for subtrees)
+- **Smart Processing**: Only process changed submodules/subtrees
+- **Parallel Execution**: Process multiple items concurrently
 - **Dry Run**: Preview operations without executing
-
-### gmd-gui (New!)
-- **Visual Comparison**: Side-by-side directory tree views with color coding
-- **Interactive Sync**: Point-and-click synchronization with preview
-- **Real-time Progress**: Progress bars and elapsed time tracking
-- **Context Menus**: Right-click to open files in system file manager
-- **Status Icons**: Visual indicators for file states (📁 📄 ⚠ ➕ ✓)
-- **Direction Control**: Source→Dest, Dest→Source, or Bidirectional
+- **Subtree Support**: Manage git subtrees alongside submodules
 - **Exclude Patterns**: Easy pattern entry with visual feedback
 
 ## Installation
@@ -95,24 +93,43 @@ gmd-merge -M /path/to/master -S /path/to/slave -i
 
 # Show differences
 gmd-merge -M /path/to/master -S /path/to/slave --action diff
-
-# Reverse sync (slave to master)
-gmd-merge -M /path/to/master -S /path/to/slave --action sync --reverse
-
-# JSON output for scripting
-gmd-merge -M /path/to/master -S /path/to/slave --format json
-
-# Dry run (preview only)
-gmd-merge -M /path/to/master -S /path/to/slave --action sync --dry-run
+# Parallel processing with 8 workers
+gmd-commit -M /path/to/repo -j 8
 ```
 
-### gmd-commit
+### Subtree Support (New!)
+
+gmd-commit now supports **git subtrees** in addition to submodules. Subtrees are an alternative to submodules where external repositories are merged into subdirectories with full history preserved.
+
+**What's the difference?**
+
+| Feature | Submodules | Subtrees |
+|---------|-----------|----------|
+| Repository | Separate repo, linked | Merged into main repo |
+| History | Separate | Combined in main repo |
+| Cloning | Requires `git submodule update` | Works with regular clone |
+| Management | `.gitmodules` file | `git subtree` commands |
+
+**Subtree Commands:**
 
 ```bash
-# Check status of all submodules
-gmd-commit -M /path/to/repo --operation status
+# Detect all subtrees in the repository
+gmd-commit -M /path/to/repo --detect-subtrees
 
-# Commit all changes with message
+# Check status of subtrees
+gmd-commit -M /path/to/repo --subtrees --operation status
+
+# Pull updates from remote for all subtrees
+gmd-commit -M /path/to/repo --subtrees --operation pull
+
+# Push local subtree changes to remote
+gmd-commit -M /path/to/repo --subtrees --operation push
+
+# Dry run to see what would be pulled/pushed
+gmd-commit -M /path/to/repo --subtrees --operation pull --dry-run
+```
+
+### gmd-gui
 gmd-commit -M /path/to/repo -m "Update dependencies"
 
 # Full workflow: add, commit, and push
@@ -225,22 +242,21 @@ GMD auto-detects config files in this order:
 |--------|-------|-------------|
 | `--master` | `-M` | Master directory (source) |
 | `--slave` | `-S` | Slave directory (destination) |
-| `--config` | `-c` | Configuration file path |
-| `--action` | `-a` | Action: preview, sync, diff, backup |
-| `--format` | `-f` | Output format: color, plain, json, silent |
-| `--interactive` | `-i` | Interactive mode |
-| `--backup` | `-b` | Create backup before changes |
-| `--dry-run` | `-n` | Preview without making changes |
-| `--reverse` | `-r` | Reverse direction (slave→master) |
-| `--excludes` | `-e` | Exclude patterns (multiple allowed) |
-| `--progress` | `-p` | Show progress bars |
-| `--yes` | `-y` | Yes to all (skip confirmations) |
-| `--categories` | | Categories: missing,update,exists,extra |
-
 ### gmd-commit Options
 
 | Option | Short | Description |
 |--------|-------|-------------|
+| `--directory` | `-M` | Git directory with submodules/subtrees |
+| `--message` | `-m` | Commit message |
+| `--config` | `-c` | Configuration file path |
+| `--format` | `-f` | Output format: color, plain, json, silent |
+| `--dry-run` | `-n` | Preview without making changes |
+| `--push` | | Push after commit |
+| `--operation` | `-o` | Operation: status, add, commit, push, full (submodule); status, pull, push (subtree) |
+| `--submodules` | | Specific submodules to process |
+| `--subtrees` | | Enable subtree mode |
+| `--detect-subtrees` | | Detect and list all subtrees |
+| `--jobs` | `-j` | Number of parallel workers |
 | `--directory` | `-M` | Git directory with submodules |
 | `--message` | `-m` | Commit message |
 | `--config` | `-c` | Configuration file path |
