@@ -1473,3 +1473,23 @@ Usage:
 [05:59:07] INFO: Session started, sess_id=316, mode=build, model=kimi-k2.5:cloud
 [05:59:07] You: 
 [05:59:10] You: 
+[06:01:42] INFO: Session started, sess_id=317, mode=build, model=kimi-k2.5:cloud
+[06:01:42] You: 
+[06:02:34] [Context: 158051/262144 (60.3%)]
+[06:02:34] [iter 1] [Context: 158051/262144 (60.3%)]
+[06:02:34] INFO: AI request (iteration 1, msgs=362)
+[06:02:43] INFO: AI response: 139285 prompt + 95 response tokens (total: 13238016 / 75168)
+[06:02:43] [after +95] [Context: 158873/262144 (60.6%)]
+[06:02:43] [iter 2] [Context: 158873/262144 (60.6%)]
+[06:02:43] INFO: AI request (iteration 2, msgs=364)
+[06:03:16] INFO: AI response: 140096 prompt + 3035 response tokens (total: 13378112 / 78203)
+[06:03:16] [after +3035] [Context: 161766/262144 (61.7%)]
+[06:03:16] [iter 3] [Context: 161766/262144 (61.7%)]
+[06:03:16] INFO: AI request (iteration 3, msgs=366)
+[06:03:30] INFO: AI response: 143137 prompt + 1010 response tokens (total: 13521249 / 79213)
+[06:03:30] [after +1010] [Context: 162810/262144 (62.1%)]
+[06:03:30] [iter 4] [Context: 162810/262144 (62.1%)]
+[06:03:30] INFO: AI request (iteration 4, msgs=368)
+[06:03:34] INFO: AI response: 144160 prompt + 176 response tokens (total: 13665409 / 79389)
+[06:03:34] [after +176] [Context: 163034/262144 (62.2%)]
+[06:03:34] You: 

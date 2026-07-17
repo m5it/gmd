@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### GUI Application (New!)
+#### GUI Application
 - **gmd-gui**: Full graphical user interface for directory synchronization
   - Split-pane directory view with resizable panels
   - Visual comparison with color coding (green=same, yellow=different, red=missing, blue=extra)
@@ -26,20 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **GUI Tests**: Integration tests verifying core module compatibility
 - **GUI Entry Point**: `gmd-gui` command available after installation
 
-### Changed
-
-- **setup.py**: Added `gmd-gui` console script entry point
-- **setup.py**: Added optional `[gui]` extras_require for Pillow dependency
-- **README.md**: Updated to include gmd-gui features and quick start
-
-### Fixed
-
-- N/A
-
-## [1.0.0] - 2024-01-XX
-- **README.md**: Updated to include gmd-gui features and quick start
-
-#### Subtree Support (New!)
+#### Subtree Support
 - **gmd-commit**: Now supports git subtrees alongside submodules
   - Auto-detect subtrees from git log with `git log --grep="git-subtree-dir:"`
   - `--subtrees` flag to enable subtree mode
@@ -49,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SubtreeConfig` class with auto_pull, squash, message_prefix settings
   - Subtree-specific output formatters (color, plain, JSON)
   - Example config files: `commit.subtree.example.json` and `.yaml`
+- **Tests**: Integration tests in `tests/test_subtree.py` with mocked git commands
 
 ### Changed
 
@@ -56,6 +44,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **setup.py**: Added optional `[gui]` extras_require for Pillow dependency
 - **README.md**: Updated to include gmd-gui features, quick start, and subtree documentation
 - **gmd-commit CLI**: Added `--subtrees`, `--detect-subtrees` flags and subtree operations
+- **Output Formatters**: Added `subtree_status()` and `subtree_operation()` methods
+
+### Fixed
+
+- N/A
+
+## [1.0.0] - 2024-01-XX
+
+### Added
+
+- **gmd-merge**: Command-line directory synchronization tool
+  - Multiple actions: preview, sync, diff, backup
+  - Sync directions: master→slave, slave→master, bidirectional
+  - File categories: missing, updated, existing, extra
+  - Interactive mode with file-by-file approval
+  - Backup support with retention policy
+  - Progress bars for large directories
+  - Multiple output formats: color, plain, JSON, silent
   - Exclude patterns with glob/regex support
   - Dry run mode
   - SHA256 verification
