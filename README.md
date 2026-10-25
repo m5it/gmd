@@ -171,6 +171,8 @@ gmd-gui
 python -m gmd.gui.main
 ```
 
+![GMD GUI Screenshot](screenshot1.jpg)
+
 The GUI provides a visual interface for:
 - Selecting source and destination directories
 - Viewing side-by-side comparison with color coding
