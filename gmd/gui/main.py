@@ -18,22 +18,35 @@ from gmd.config.schema import GMDConfig, SyncDirection
 from gmd.core.scanner import DirectoryScanner, ScanResult
 from gmd.core.comparator import FileComparator, FileStatus, ComparisonResult
 from gmd.core.merger import DirectoryMerger
+from gmd.gui.preferences import GuiPreferences
 
 
 class GMDGuiApp:
     """Main GUI application for GMD Merge."""
-    
+
     def __init__(self):
         """Initialize the GUI application."""
+        self.preferences = GuiPreferences()
+
         self.root = tk.Tk()
         self.root.title("GMD Merge - Directory Synchronization")
         self.root.minsize(1200, 700)
-        self.root.geometry("1400x800")
-        
+
+        # Restore geometry if available and plausible
+        geometry = self.preferences.get_geometry()
+        if geometry and geometry.get("width", 0) >= 800 and geometry.get("height", 0) >= 500:
+            width = geometry.get("width", 1400)
+            height = geometry.get("height", 800)
+            x = geometry.get("x", 100)
+            y = geometry.get("y", 100)
+            self.root.geometry(f"{width}x{height}+{x}+{y}")
+        else:
+            self.root.geometry("1400x800")
+
         # Store current paths
         self.source_path: Path = None
         self.dest_path: Path = None
-        
+
         # Store scan results
         self.source_scan: ScanResult = None
         self.dest_scan: ScanResult = None
@@ -74,7 +87,30 @@ class GMDGuiApp:
         
         # Set up window close handler
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
-    
+
+        # Track geometry changes for persistence
+        self._geometry_after_id = None
+        self.root.bind("<Configure>", self._on_configure)
+
+    def _on_configure(self, event=None):
+        """Save window geometry after resize/move events."""
+        if event is None or event.widget is not self.root:
+            return
+        if self._geometry_after_id is not None:
+            self.root.after_cancel(self._geometry_after_id)
+        self._geometry_after_id = self.root.after(500, self._save_geometry)
+
+    def _save_geometry(self):
+        """Persist current window geometry."""
+        try:
+            width = self.root.winfo_width()
+            height = self.root.winfo_height()
+            x = self.root.winfo_x()
+            y = self.root.winfo_y()
+            self.preferences.set_geometry(width, height, x, y)
+        except Exception:
+            pass
+
     def _configure_tree_tags(self):
         """Configure treeview color tags based on comparison status."""
         for tag_name, style in self.tree_tags.items():
@@ -273,51 +309,92 @@ class GMDGuiApp:
         # Row 0: Direction selector
         ttk.Label(self.control_frame, text="Direction:").grid(row=0, column=0, sticky="w", padx=5)
         
-        self.direction_var = tk.StringVar(value="source_to_dest")
+        saved_direction = self.preferences.get_direction()
+        self.direction_var = tk.StringVar(value=saved_direction or "source_to_dest")
         direction_frame = ttk.Frame(self.control_frame)
         direction_frame.grid(row=0, column=1, columnspan=2, sticky="w", padx=5)
-        
+
         ttk.Radiobutton(
-            direction_frame, 
+            direction_frame,
             text="Source → Destination",
             variable=self.direction_var,
-            value="source_to_dest"
+            value="source_to_dest",
+            command=self._on_direction_changed
         ).pack(side="left", padx=5)
-        
+
         ttk.Radiobutton(
             direction_frame,
             text="Destination → Source",
             variable=self.direction_var,
-            value="dest_to_source"
+            value="dest_to_source",
+            command=self._on_direction_changed
         ).pack(side="left", padx=5)
-        
+
         ttk.Radiobutton(
             direction_frame,
             text="Bidirectional",
             variable=self.direction_var,
-            value="bidirectional"
+            value="bidirectional",
+            command=self._on_direction_changed
         ).pack(side="left", padx=5)
         
-        # Row 1: Exclude patterns
-        ttk.Label(self.control_frame, text="Excludes:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        
-        self.excludes_var = tk.StringVar()
+        # Row 1: File type filters
+        ttk.Label(self.control_frame, text="Types:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
+
+        saved_categories = set(self.preferences.get_categories() or [])
+        category_defaults = {
+            FileStatus.MISSING: "missing" in saved_categories or not saved_categories,
+            FileStatus.UPDATE: "update" in saved_categories or not saved_categories,
+            FileStatus.EXISTS: "exists" in saved_categories,
+            FileStatus.EXTRA: "extra" in saved_categories or not saved_categories,
+        }
+        self.type_vars = {
+            FileStatus.MISSING: tk.BooleanVar(value=category_defaults[FileStatus.MISSING]),
+            FileStatus.UPDATE: tk.BooleanVar(value=category_defaults[FileStatus.UPDATE]),
+            FileStatus.EXISTS: tk.BooleanVar(value=category_defaults[FileStatus.EXISTS]),
+            FileStatus.EXTRA: tk.BooleanVar(value=category_defaults[FileStatus.EXTRA]),
+        }
+        type_frame = ttk.Frame(self.control_frame)
+        type_frame.grid(row=1, column=1, columnspan=2, sticky="w", padx=5, pady=5)
+
+        self.type_checkboxes = {}
+        type_labels = {
+            FileStatus.MISSING: f"{self.icons['missing']} Missing",
+            FileStatus.UPDATE: f"{self.icons['modified']} Modified",
+            FileStatus.EXISTS: f"{self.icons['same']} Same",
+            FileStatus.EXTRA: f"{self.icons['extra']} Extra",
+        }
+        for status in (FileStatus.MISSING, FileStatus.UPDATE, FileStatus.EXISTS, FileStatus.EXTRA):
+            cb = ttk.Checkbutton(
+                type_frame,
+                text=type_labels[status],
+                variable=self.type_vars[status],
+                command=self._on_categories_changed
+            )
+            cb.pack(side="left", padx=5)
+            self.type_checkboxes[status] = cb
+
+        # Row 2: Exclude patterns
+        ttk.Label(self.control_frame, text="Excludes:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
+
+        self.excludes_var = tk.StringVar(value=self.preferences.get_excludes() or "")
+        self.excludes_var.trace_add("write", self._on_excludes_changed)
         self.excludes_entry = ttk.Entry(
             self.control_frame,
             textvariable=self.excludes_var,
             width=50
         )
-        self.excludes_entry.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
-        
+        self.excludes_entry.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
+
         ttk.Label(
             self.control_frame,
             text="Comma-separated patterns (*.tmp, .git/, etc)",
             foreground="gray"
-        ).grid(row=1, column=2, sticky="w", padx=5)
+        ).grid(row=2, column=2, sticky="w", padx=5)
         
-        # Row 2: Action buttons with icons
+        # Row 3: Action buttons with icons
         button_frame = ttk.Frame(self.control_frame)
-        button_frame.grid(row=2, column=0, columnspan=3, pady=10)
+        button_frame.grid(row=3, column=0, columnspan=3, pady=10)
         
         self.preview_btn = ttk.Button(
             button_frame,
@@ -414,7 +491,8 @@ class GMDGuiApp:
                 text=f"Files: {stats['total']} | "
                      f"Same: {stats['exists']} | "
                      f"Diff: {stats['update']} | "
-                     f"Missing: {stats['missing']}"
+                     f"Missing: {stats['missing']} | "
+                     f"Extra: {stats['extra']}"
             )
         else:
             total = 0
@@ -526,17 +604,25 @@ class GMDGuiApp:
     
     def _open_source(self):
         """Open source directory dialog."""
-        path = filedialog.askdirectory(title="Select Source Directory")
+        initial_dir = ""
+        last_dirs = self.preferences.get_last_dirs() or {}
+        if last_dirs.get("source"):
+            initial_dir = last_dirs["source"]
+        path = filedialog.askdirectory(title="Select Source Directory", initialdir=initial_dir)
         if path:
             self.source_path = Path(path)
             self.left_label.config(text=str(self.source_path))
             self._update_status(f"Source: {self.source_path}")
             self._load_directory_to_tree(self.left_tree, self.source_path)
             self._auto_scan()
-    
+
     def _open_dest(self):
         """Open destination directory dialog."""
-        path = filedialog.askdirectory(title="Select Destination Directory")
+        initial_dir = ""
+        last_dirs = self.preferences.get_last_dirs() or {}
+        if last_dirs.get("destination"):
+            initial_dir = last_dirs["destination"]
+        path = filedialog.askdirectory(title="Select Destination Directory", initialdir=initial_dir)
         if path:
             self.dest_path = Path(path)
             self.right_label.config(text=str(self.dest_path))
@@ -602,7 +688,7 @@ class GMDGuiApp:
             self.comparison = comparator.compare_directories(
                 self.source_scan,
                 self.dest_scan,
-                categories=[FileStatus.MISSING, FileStatus.UPDATE, FileStatus.EXISTS, FileStatus.EXTRA]
+                categories=self._selected_categories()
             )
             
             self.progress["value"] = 100
@@ -686,11 +772,38 @@ class GMDGuiApp:
         for root_item in tree.get_children():
             process_item(root_item, base_path)
     
+    def _on_direction_changed(self):
+        """Persist direction selection changes."""
+        self.preferences.set_direction(self.direction_var.get())
+
+    def _on_categories_changed(self):
+        """Persist category selection changes."""
+        self.preferences.set_categories([status.name.lower() for status in self._selected_categories()])
+
+    def _on_excludes_changed(self, *args):
+        """Persist exclude pattern changes."""
+        self.preferences.set_excludes(self.excludes_var.get())
+
+    def _selected_categories(self):
+        """Return list of FileStatus categories selected by the user."""
+        categories = []
+        if self.type_vars[FileStatus.MISSING].get():
+            categories.append(FileStatus.MISSING)
+        if self.type_vars[FileStatus.UPDATE].get():
+            categories.append(FileStatus.UPDATE)
+        if self.type_vars[FileStatus.EXISTS].get():
+            categories.append(FileStatus.EXISTS)
+        if self.type_vars[FileStatus.EXTRA].get():
+            categories.append(FileStatus.EXTRA)
+        return categories or [FileStatus.MISSING, FileStatus.UPDATE]
+
     def _preview_changes(self):
         """Preview changes before sync."""
         if not self.comparison:
             messagebox.showwarning("Warning", "Please scan and compare directories first")
             return
+        
+        categories = self._selected_categories()
         
         # Create preview window
         preview_window = tk.Toplevel(self.root)
@@ -717,28 +830,39 @@ class GMDGuiApp:
         tree.pack(side="left", fill="both", expand=True, padx=5, pady=5)
         scrollbar.pack(side="right", fill="y")
         
-        # Populate with changes with icons
+        # Populate with changes with icons, respecting selected categories
         direction = self.direction_var.get()
-        
-        for comp in self.comparison.missing:
-            tree.insert("", "end", values=(
-                f"{self.icons['missing']} Copy", 
-                str(comp.source_path), 
-                str(comp.dest_path)
-            ))
-        
-        for comp in self.comparison.update:
-            tree.insert("", "end", values=(
-                f"{self.icons['modified']} Update", 
-                str(comp.source_path), 
-                str(comp.dest_path)
-            ))
-        
-        if direction == "bidirectional":
+        show_extra = direction == "bidirectional" or self.type_vars[FileStatus.EXTRA].get()
+
+        if FileStatus.MISSING in categories:
+            for comp in self.comparison.missing:
+                tree.insert("", "end", values=(
+                    f"{self.icons['missing']} Copy",
+                    str(comp.source_path),
+                    str(comp.dest_path)
+                ))
+
+        if FileStatus.UPDATE in categories:
+            for comp in self.comparison.update:
+                tree.insert("", "end", values=(
+                    f"{self.icons['modified']} Update",
+                    str(comp.source_path),
+                    str(comp.dest_path)
+                ))
+
+        if FileStatus.EXISTS in categories:
+            for comp in self.comparison.exists:
+                tree.insert("", "end", values=(
+                    f"{self.icons['same']} Same",
+                    str(comp.source_path),
+                    str(comp.dest_path)
+                ))
+
+        if show_extra and FileStatus.EXTRA in categories:
             for comp in self.comparison.extra:
                 tree.insert("", "end", values=(
-                    f"{self.icons['extra']} Copy Back", 
-                    str(comp.slave_entry.path), 
+                    f"{self.icons['extra']} Extra",
+                    str(comp.slave_entry.path),
                     str(comp.master_entry.path if comp.master_entry else "")
                 ))
         
@@ -760,26 +884,25 @@ class GMDGuiApp:
         direction = direction_map.get(self.direction_var.get(), SyncDirection.MASTER_TO_SLAVE)
         
         # Confirm
+        categories = self._selected_categories()
         stats = self.comparison.get_stats()
         msg = f"Synchronize with direction: {direction.value}?\n\n"
+        msg += f"Selected categories: {', '.join(c.name.lower() for c in categories)}\n"
         msg += f"Files to copy: {stats['missing']}\n"
         msg += f"Files to update: {stats['update']}\n"
-        
+        msg += f"Extra files: {stats['extra']}\n"
+
         if not messagebox.askyesno("Confirm Sync", msg):
             return
-        
+
         self._update_status("Synchronizing...")
         self._start_timer()
         self.progress["value"] = 0
-        
+
         try:
             # Perform merge
             merger = DirectoryMerger(direction=direction, verify=True)
-            
-            categories = [FileStatus.MISSING, FileStatus.UPDATE]
-            if direction == SyncDirection.BIDIRECTIONAL:
-                categories.append(FileStatus.EXTRA)
-            
+
             report = merger.merge_all(self.comparison, categories=categories)
             
             # Update progress
@@ -1032,7 +1155,16 @@ class GMDGuiApp:
     def _on_close(self):
         """Handle window close."""
         if messagebox.askyesno("Confirm", "Are you sure you want to exit?"):
+            self._save_geometry()
+            self._save_last_dirs()
             self.root.destroy()
+
+    def _save_last_dirs(self):
+        """Persist last selected directories."""
+        self.preferences.set_last_dirs(
+            str(self.source_path) if self.source_path else None,
+            str(self.dest_path) if self.dest_path else None
+        )
     
     def run(self):
         """Start the GUI main loop."""
