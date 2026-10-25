@@ -75,6 +75,20 @@ class GMDGuiApp:
         # Set up window close handler
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
     
+    def _configure_tree_tags(self):
+        """Configure treeview color tags based on comparison status."""
+        for tag_name, style in self.tree_tags.items():
+            self.left_tree.tag_configure(
+                tag_name,
+                background=style.get("background", ""),
+                foreground=style.get("foreground", ""),
+            )
+            self.right_tree.tag_configure(
+                tag_name,
+                background=style.get("background", ""),
+                foreground=style.get("foreground", ""),
+            )
+
     def _set_app_icon(self):
         """Set application icon."""
         try:
@@ -1025,7 +1039,7 @@ class GMDGuiApp:
         self.root.mainloop()
 
 
-def main():
+def main(args=None):
     """Entry point for GUI application."""
     app = GMDGuiApp()
     app.run()

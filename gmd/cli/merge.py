@@ -413,7 +413,9 @@ def _action_sync(
     merger = DirectoryMerger(
         direction=direction,
         verify=True,
-        progress_callback=lambda c, t, p: None
+        progress_callback=lambda c, t, p: None,
+        master_base=config_obj.master,
+        slave_base=config_obj.slave,
     )
     
     with ProgressManager(description="Syncing", total=len(files_to_process)) as sync_progress:

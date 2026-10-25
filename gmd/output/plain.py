@@ -75,12 +75,14 @@ class PlainOutput:
         self._print(f"[ERROR] {path}: {error}")
     
     def stats(self, missing: int = 0, update: int = 0, exists: int = 0,
-              copied: int = 0, failed: int = 0) -> None:
+              copied: int = 0, failed: int = 0, extra: int = 0) -> None:
         """Print statistics."""
         self._print(f"\n--- Statistics ---")
         self._print(f"Missing: {missing}")
         self._print(f"Update: {update}")
         self._print(f"Exists: {exists}")
+        if extra:
+            self._print(f"Extra: {extra}")
         self._print(f"Copied: {copied}")
         self._print(f"Failed: {failed}")
         self._print(f"------------------")

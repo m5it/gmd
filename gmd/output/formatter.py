@@ -111,10 +111,10 @@ class OutputFormatter:
         })
     
     # Statistics
-    def stats(self, missing: int = 0, update: int = 0, exists: int = 0, 
-              copied: int = 0, failed: int = 0) -> None:
+    def stats(self, missing: int = 0, update: int = 0, exists: int = 0,
+              copied: int = 0, failed: int = 0, extra: int = 0) -> None:
         """Print statistics."""
-        self._formatter.stats(missing, update, exists, copied, failed)
+        self._formatter.stats(missing, update, exists, copied, failed, extra)
     
     # Summary
     # Git operations

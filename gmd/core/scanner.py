@@ -188,14 +188,15 @@ class DirectoryScanner:
         # Reset for slave scan
         scanned = 0
         
+        # Temporarily replace callback
+        original_callback = self.progress_callback
+
         def slave_progress(count: int, path: str) -> None:
             nonlocal scanned
             scanned = count
-            if self.progress_callback:
-                self.progress_callback(len(master_scan.files) + count, path)
-        
-        # Temporarily replace callback
-        original_callback = self.progress_callback
+            if original_callback:
+                original_callback(len(master_scan.files) + count, path)
+
         self.progress_callback = slave_progress
         
         slave_scan = self.scan(slave_dir)

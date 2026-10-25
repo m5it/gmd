@@ -105,15 +105,16 @@ class JsonOutput:
         })
     
     def stats(self, missing: int = 0, update: int = 0, exists: int = 0,
-              copied: int = 0, failed: int = 0) -> None:
+              copied: int = 0, failed: int = 0, extra: int = 0) -> None:
         """Print statistics."""
         self._data["stats"] = {
             "missing": missing,
             "update": update,
             "exists": exists,
+            "extra": extra,
             "copied": copied,
             "failed": failed,
-            "total": missing + update + exists
+            "total": missing + update + exists + extra
         }
     
     def summary(self, action: str, total: int, processed: int) -> None:

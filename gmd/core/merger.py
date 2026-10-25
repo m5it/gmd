@@ -59,46 +59,69 @@ class MergeReport:
 
 class DirectoryMerger:
     """Merge directories with direction support."""
-    
+
     def __init__(
         self,
         direction: SyncDirection = SyncDirection.MASTER_TO_SLAVE,
         verify: bool = True,
-        progress_callback: Optional[Callable[[int, int, str], None]] = None
+        progress_callback: Optional[Callable[[int, int, str], None]] = None,
+        master_base: Optional[Path] = None,
+        slave_base: Optional[Path] = None,
     ):
         self.direction = direction
         self.verify = verify
         self.progress_callback = progress_callback
-    
+        self.master_base = master_base
+        self.slave_base = slave_base
+
+    def _resolve_dest(self, comparison: FileComparison) -> Optional[Path]:
+        """Build a destination path when the comparison has no slave entry."""
+        if self.slave_base is None:
+            return None
+        return self.slave_base / comparison.relative_path
+
+    def _resolve_source(self, comparison: FileComparison) -> Optional[Path]:
+        """Build a source path when the comparison has no master entry."""
+        if self.master_base is None:
+            return None
+        return self.master_base / comparison.relative_path
+
     def _get_source_dest(
         self,
         comparison: FileComparison
     ) -> Tuple[Optional[Path], Optional[Path]]:
         """Get source and destination based on direction."""
         if self.direction == SyncDirection.MASTER_TO_SLAVE:
-            return comparison.source_path, comparison.dest_path
+            source = comparison.source_path
+            dest = comparison.dest_path or self._resolve_dest(comparison)
+            return source, dest
         elif self.direction == SyncDirection.SLAVE_TO_MASTER:
             # Reverse: slave is source, master is destination
             if comparison.status == FileStatus.EXTRA:
                 # Extra file in slave -> copy to master
-                return comparison.slave_entry.path if comparison.slave_entry else None, \
-                       comparison.master_entry.path if comparison.master_entry else None
+                source = comparison.slave_entry.path if comparison.slave_entry else self._resolve_source(comparison)
+                dest = comparison.master_entry.path if comparison.master_entry else None
+                return source, dest
             else:
-                return comparison.slave_entry.path if comparison.slave_entry else None, \
-                       comparison.master_entry.path if comparison.master_entry else None
+                source = comparison.slave_entry.path if comparison.slave_entry else None
+                dest = comparison.master_entry.path if comparison.master_entry else self._resolve_source(comparison)
+                return source, dest
         elif self.direction == SyncDirection.BIDIRECTIONAL:
             # Use newer file as source
             if comparison.status == FileStatus.EXTRA:
-                return comparison.slave_entry.path if comparison.slave_entry else None, \
-                       comparison.master_entry.path if comparison.master_entry else None
+                source = comparison.slave_entry.path if comparison.slave_entry else self._resolve_source(comparison)
+                dest = comparison.master_entry.path if comparison.master_entry else None
+                return source, dest
             elif comparison.master_entry and comparison.slave_entry:
                 if comparison.master_entry.modified_time > comparison.slave_entry.modified_time:
                     return comparison.master_entry.path, comparison.slave_entry.path
                 else:
                     return comparison.slave_entry.path, comparison.master_entry.path
             else:
-                return comparison.source_path, comparison.dest_path
-        
+                source = comparison.source_path or self._resolve_source(comparison)
+                dest = comparison.dest_path or self._resolve_dest(comparison)
+                return source, dest
+
         return None, None
     
     def _ensure_parent_dir(self, path: Path) -> bool:

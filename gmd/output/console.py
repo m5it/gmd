@@ -90,18 +90,20 @@ class ConsoleOutput:
         self.console.print(f"[file.error]✗[/file.error] Error with {path}: {error}")
     
     def stats(self, missing: int = 0, update: int = 0, exists: int = 0,
-              copied: int = 0, failed: int = 0) -> None:
+              copied: int = 0, failed: int = 0, extra: int = 0) -> None:
         """Print statistics."""
         table = Table(title="Statistics", show_header=True, header_style="bold")
         table.add_column("Category", style="cyan")
         table.add_column("Count", justify="right", style="magenta")
-        
+
         table.add_row("Missing", str(missing))
         table.add_row("Update", str(update))
         table.add_row("Exists", str(exists))
+        if extra:
+            table.add_row("Extra", str(extra))
         table.add_row("Copied", f"[green]{copied}[/green]")
         table.add_row("Failed", f"[red]{failed}[/red]" if failed > 0 else "0")
-        
+
         self.console.print()
         self.console.print(table)
     
