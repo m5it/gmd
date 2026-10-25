@@ -1,6 +1,8 @@
 #!/bin/bash
 # Script to start program trough .venv. It also check if .venv exists.
-# Link to ex.: /usr/local/bin/gmd then you can run like:
+# Link to ex.: /usr/local/bin/gmd 
+# Ex. link: ln -s $(pwd)/mystart.sh /usr/local/bin/gmd
+# Then you can run like:
 # gmd -h OR gmd --help OR gmd gui
 
 RP=$(which $0)
